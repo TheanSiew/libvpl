@@ -303,6 +303,13 @@ struct value_converter<VType, typename std::enable_if<std::is_enum<VType>::value
 mfxStatus ConvertStrToFourCC(std::string value, mfxU32 &t) {
     trim(value);
     uint32_t converted_value = 0;
+
+    // Some of the fourcc string only contains 3 characters. E.g. AVC, AV1, VP9.
+    // Append a space to allow fourcc string to be converted successfully.
+    if (value.size() == 3) {
+        value += ' ';
+    }
+
     if (value.size() == 4) {
         converted_value = static_cast<uint32_t>((((uint32_t)value[0]) << 0) + (((uint32_t)value[1]) << 8) + (((uint32_t)value[2]) << 16) +
                                                 (((uint32_t)value[3]) << 24));
